@@ -21,7 +21,11 @@ python -m venv .venv
 pip install -r requirements.txt
 # Download/prepare the source data locally, then run:
 python main.py --input data/churn.csv --target Churn --positive-label 1 --group Sex --contact-share 0.10
+# Score an approved new customer export:
+python score.py --model outputs/model.joblib --input data/new_customers.csv --contact-share 0.10
 ```
+
+See MODEL_CARD.md for intended use and limitations.
 
 ## Outputs
 
