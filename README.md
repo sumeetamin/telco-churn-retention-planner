@@ -1,42 +1,34 @@
 # Telco Churn Retention Planner
 
-A churn probability model that produces a capacity-limited outreach queue and holdout metrics.
+A reproducible churn-ranking prototype that turns model probabilities into a capacity-limited outreach list, with a holdout subgroup error audit.
 
-> **Portfolio prototype.** Code is provided; no benchmark results are claimed until you run it on the cited data and record the output.
+## Dataset and provenance
 
-## Use case
+Uses the [UCI Iranian Churn dataset (ID 563)](https://archive.ics.uci.edu/dataset/563/iranian%2Bchurn%2Bdatase). It contains 3,150 telecom customer records. UCI documents that the predictors aggregate the first nine months and the churn state is recorded at month 12, leaving a three-month planning gap. The source is a single-company sample, not a representative benchmark of current telecom customers.
 
-A churn probability model that produces a capacity-limited outreach queue and holdout metrics. The command below reads a local data export, applies a transparent baseline, writes holdout or decision-support outputs, and saves the fitted model where applicable.
+## Reproduce
 
-## Data and provenance
-
-[UCI Iranian Churn Dataset](https://archive.ics.uci.edu/dataset/563/iranian+churn+dataset). A CSV with one customer per row and a binary churn label. Pass its exact label column name with `--target`; optionally supply a segment with `--group`. Dataset files are not bundled. Respect the source terms and cite the dataset when publishing results.
-
-## Quick start
+Download the UCI CSV to a private local path. Install dependencies and run:
 
 ```bash
-python -m venv .venv
-# Windows: .venv\\Scripts\\activate
-# macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-# Download/prepare the source data locally, then run:
-python main.py --input data/churn.csv --target Churn --positive-label 1 --group Sex --contact-share 0.10
-# Score an approved new customer export:
-python score.py --model outputs/model.joblib --input data/new_customers.csv --contact-share 0.10
+python -m pip install -r requirements.txt
+python main.py --input "Customer Churn.csv" --target Churn --positive-label 1 --group "Age Group" --contact-share 0.10
 ```
 
-See MODEL_CARD.md for intended use and limitations.
+The runner writes aggregate metrics, holdout probabilities, a local outreach queue, and a serialized model under `outputs/`. Raw data and row-level outputs are ignored by Git.
 
-## Outputs
+## Holdout results
 
-The `outputs/` directory contains the model-specific results (metrics and/or ranked CSV) and a serialized estimator where applicable. Outputs are reproducible with the same input, package versions, and random seed. The repository intentionally excludes downloaded data and generated artifacts.
+Seed-42 stratified random 75/25 split; 2,362 train and 788 holdout records. Threshold 0.50, positive label 1.
 
-## Evaluation and operating notes
+| ROC-AUC | Average precision | Brier score | Balanced accuracy |
+|---:|---:|---:|---:|
+| 0.922 | 0.731 | 0.113 | 0.843 |
 
-A predicted churn probability is not a treatment effect. Contacting high-risk customers may not reduce churn; run a randomized campaign and measure incremental retention before claiming value.
+At a 10% contact capacity, the score-ranked queue captured 70.5% of the holdout churners. This is a single split and not an intervention or uplift estimate.
 
-For a production review, preserve a time-based, untouched holdout; compare against a simple business baseline; inspect calibration and subgroup error; document data lineage; and monitor drift. The included baseline is not a production service.
+## Group audit and limits
 
-## License
+Age-group rates are descriptive only. Holdout groups 1 and 5 have 26 and 42 records and no positive outcomes, so their TPR estimates are not informative. Do not use this as a fairness certification, automated customer action, or evidence that an outreach campaign works. Validate calibration and contact policy on newer, representative data and a randomized intervention before deployment.
 
-No code license file is included yet. Third-party datasets remain subject to their original terms.
+Aggregate metrics, split details, and the input SHA-256 are in [`reports/benchmark.json`](reports/benchmark.json).
