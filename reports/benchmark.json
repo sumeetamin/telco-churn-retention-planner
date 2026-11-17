@@ -1,0 +1,62 @@
+{
+  "rows": 3150,
+  "input_sha256": "395d04854ce6daa1cdee8ab820df5a90691de9277dbba72096b8b01a60a655d1",
+  "train_rows": 2362,
+  "test_rows": 788,
+  "positive_label": "1",
+  "threshold": 0.5,
+  "roc_auc": 0.9220996890788962,
+  "average_precision": 0.7309052271805386,
+  "brier_score": 0.1127082990590432,
+  "balanced_accuracy": 0.8433492032646717,
+  "confusion_matrix": {
+    "tn": 547,
+    "fp": 117,
+    "fn": 17,
+    "tp": 107
+  },
+  "group_audit": [
+    {
+      "group": "1",
+      "n": 26,
+      "positive_rate": 0,
+      "tpr": 0,
+      "fpr": 0
+    },
+    {
+      "group": "2",
+      "n": 269,
+      "positive_rate": 0.379182156133829,
+      "tpr": 0.8,
+      "fpr": 0.2831050228310502
+    },
+    {
+      "group": "3",
+      "n": 363,
+      "positive_rate": 0.2534435261707989,
+      "tpr": 0.8867924528301887,
+      "fpr": 0.14516129032258066
+    },
+    {
+      "group": "4",
+      "n": 88,
+      "positive_rate": 0.3409090909090909,
+      "tpr": 0.9523809523809523,
+      "fpr": 0.14925373134328357
+    },
+    {
+      "group": "5",
+      "n": 42,
+      "positive_rate": 0,
+      "tpr": 0,
+      "fpr": 0
+    }
+  ],
+  "contact_share": 0.1,
+  "queue_size": 78,
+  "captured_positive_rate": 0.7051282051282052,
+  "source_url": "https://archive.ics.uci.edu/dataset/563/iranian%2Bchurn%2Bdatase",
+  "benchmark_date": "2026-11-17",
+  "method": "class-weighted logistic regression, stratified 75/25 split, seed 42, 0.50 threshold",
+  "label": "Churn=1; group audit by Age Group"
+}
