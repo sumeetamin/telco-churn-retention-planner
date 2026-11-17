@@ -1,5 +1,5 @@
 """Customer churn model plus a capacity-constrained retention contact list."""
-import argparse, json
+import argparse, json, hashlib
 from pathlib import Path
 import joblib
 import numpy as np
@@ -41,7 +41,7 @@ def main():
     Xtr,Xte,ytr,yte,idxtr,idxte=train_test_split(X,y,np.arange(len(y)),test_size=.25,random_state=42,stratify=y)
     model.fit(Xtr,ytr); prob=model.predict_proba(Xte)[:,pos_id]; pred=(prob>=a.threshold).astype(int); truth=(yte==pos_id).astype(int)
     tn,fp,fn,tp=confusion_matrix(truth,pred,labels=[0,1]).ravel()
-    metrics={"rows":int(len(df)),"train_rows":int(len(Xtr)),"test_rows":int(len(Xte)),
+    metrics={"rows":int(len(df)),"input_sha256":hashlib.sha256(Path(a.input).read_bytes()).hexdigest(),"train_rows":int(len(Xtr)),"test_rows":int(len(Xte)),
              "positive_label":pos,"threshold":a.threshold,
              "roc_auc":float(roc_auc_score(truth,prob)),"average_precision":float(average_precision_score(truth,prob)),
              "brier_score":float(brier_score_loss(truth,prob)),"balanced_accuracy":float(balanced_accuracy_score(truth,pred)),
@@ -66,3 +66,4 @@ def main():
     joblib.dump({"pipeline":model,"classes":labels.classes_.tolist(),"positive_label":pos,"threshold":a.threshold,"features":X.columns.tolist()},out/"model.joblib")
     print(json.dumps(metrics,indent=2))
 if __name__=="__main__": main()
+
