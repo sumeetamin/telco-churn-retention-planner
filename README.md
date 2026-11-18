@@ -25,7 +25,7 @@ Seed-42 stratified random 75/25 split; 2,362 train and 788 holdout records. Thre
 |---:|---:|---:|---:|
 | 0.922 | 0.731 | 0.113 | 0.843 |
 
-At a 10% contact capacity, the score-ranked queue captured 70.5% of the holdout churners. This is a single split and not an intervention or uplift estimate.
+At a 10% contact capacity, the score-ranked queue had 70.5% precision and captured 44.4% of holdout churners (55 of 124) on one split. This is not an intervention or uplift estimate.
 
 ## Group audit and limits
 
