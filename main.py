@@ -59,7 +59,7 @@ def main():
     metrics["group_audit"]=audit
     k=max(1,int(len(prob)*a.contact_share)); top=np.argsort(-prob)[:k]
     pd.DataFrame({"holdout_row":idxte[top],"churn_probability":prob[top],"actual_label":labels.inverse_transform(yte[top])}).to_csv(out/"retention_queue.csv",index=False)
-    metrics["contact_share"]=a.contact_share; metrics["queue_size"]=int(k); metrics["captured_positive_rate"]=float(truth[top].mean())
+    metrics["contact_share"]=a.contact_share; metrics["queue_size"]=int(k); metrics["queue_precision"]=float(truth[top].mean()); metrics["holdout_positive_recall_at_queue"]=float(truth[top].sum()/max(1,truth.sum()))
     metrics["group_audit"]=audit
     (out/"metrics.json").write_text(json.dumps(metrics,indent=2))
     pd.DataFrame({"actual":labels.inverse_transform(yte),"probability_positive":prob,"predicted":np.where(pred==1,pos,labels.classes_[1-pos_id])}).to_csv(out/"holdout_predictions.csv",index=False)
